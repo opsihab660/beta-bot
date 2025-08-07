@@ -1,4 +1,20 @@
-2025-08-07 11:59:55,380 - INFO - [BOT] Telegram bot connected: @sunshinex_music_bot
-2025-08-07 11:59:57,285 - INFO - 
-[!] Script terminated by user.
-2025-08-07 11:59:57,286 - INFO - Script finished.
+2025-08-07 12:50:01,078 - INFO - [BOT] Telegram bot connected: @sunshinex_music_bot
+2025-08-07 12:50:02,445 - INFO - Navigating to the login page.
+2025-08-07 12:50:03,934 - INFO - Starting Cloudflare bypass.
+2025-08-07 12:50:36,921 - INFO - Cloudflare bypass successful. Proceeding to login.
+2025-08-07 12:50:36,968 - INFO - Entered username.
+2025-08-07 12:50:36,991 - INFO - Entered password.
+2025-08-07 12:50:37,235 - INFO - Login button clicked.
+2025-08-07 12:50:52,244 - INFO - [SUCCESS] Manual login successful!
+2025-08-07 12:50:52,244 - INFO - [*] Fetching WhatsApp message summary at 2025-08-07 12:50:52...
+2025-08-07 12:50:56,455 - INFO - [SUCCESS] Found 2 messages
+2025-08-07 12:50:56,456 - INFO - [NOTIFY] Found 2 new messages
+2025-08-07 12:50:56,915 - INFO - [SENT] Sent Telegram notification for +8801713302932
+2025-08-07 12:50:57,379 - INFO - [SENT] Sent Telegram notification for +8801713150337
+2025-08-07 12:50:57,379 - INFO - 
+[WAITING] Waiting 10 seconds before next check...
+
+2025-08-07 12:51:07,045 - INFO - 
+[!] Script interrupted by user
+2025-08-07 12:51:07,047 - INFO - Closing the browser.
+2025-08-07 12:51:08,145 - INFO - Script finished.

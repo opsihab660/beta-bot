@@ -1,6 +1,10 @@
 import time
 from DrissionPage import ChromiumPage
 
+class PageDisconnectedError(Exception):
+    """Custom exception for when the browser page disconnects."""
+    pass
+
 class CloudflareBypasser:
     def __init__(self, driver: ChromiumPage, max_retries=-1, log=True):
         self.driver = driver
@@ -45,6 +49,8 @@ class CloudflareBypasser:
                             button = body.shadow_root('tag:input')
         except Exception as e:
             self.log_message(f"Error in basic search for CF button: {e}")
+            if "与页面的连接已断开" in str(e) or "Connection to the page was disconnected" in str(e):
+                raise PageDisconnectedError("Page disconnected during basic search")
 
         if button:
             return button
@@ -64,6 +70,8 @@ class CloudflareBypasser:
                     button = self.search_recursively_shadow_root_with_cf_input(iframe_body)
         except Exception as e:
             self.log_message(f"Error in recursive search for CF button: {e}")
+            if "与页面的连接已断开" in str(e) or "Connection to the page was disconnected" in str(e):
+                raise PageDisconnectedError("Page disconnected during recursive search")
 
         return button
 
@@ -79,9 +87,12 @@ class CloudflareBypasser:
                 button.click()
             else:
                 self.log_message("Verification button not found.")
-
+        except PageDisconnectedError:
+            raise  # Re-raise the specific error to be caught by bypass()
         except Exception as e:
             self.log_message(f"Error clicking verification button: {e}")
+            if "与页面的连接已断开" in str(e) or "Connection to the page was disconnected" in str(e):
+                raise PageDisconnectedError("Page disconnected during click")
 
     def is_bypassed(self):
         try:
@@ -100,8 +111,14 @@ class CloudflareBypasser:
                 self.log_message("Exceeded maximum retries. Bypass failed.")
                 break
 
-            self.log_message(f"Attempt {try_count + 1}: Verification page detected. Trying to bypass...")
-            self.click_verification_button()
+            try:
+                self.log_message(f"Attempt {try_count + 1}: Verification page detected. Trying to bypass...")
+                self.click_verification_button()
+
+            except PageDisconnectedError as e:
+                self.log_message(f"Handled a page disconnect: {e}. Waiting for page to stabilize.")
+                time.sleep(5)  # Wait for the page to reload/stabilize
+                continue  # Retry the loop without incrementing try_count
 
             try_count += 1
             time.sleep(2)

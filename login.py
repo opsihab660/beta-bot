@@ -22,10 +22,10 @@ IGNORE_INITIAL_DATA = True  # Set to False to process existing data on startup
 
 
 # === Credentials ===
-USERNAME = os.getenv("USERNAME", "2915")
-PASSWORD = os.getenv("PASSWORD", "sah_0731")
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "7443478238:AAEPF5zYatWTIpfN2OLOUN7mNdFgcGDT0a4")
-TELEGRAM_GROUP_ID = os.getenv("TELEGRAM_GROUP_ID", "-1002882865906")
+USERNAME = "2915"       # Replace with your real username
+PASSWORD = "sah_0731"        # Replace with your real password
+TELEGRAM_BOT_TOKEN = "7443478238:AAEPF5zYatWTIpfN2OLOUN7mNdFgcGDT0a4"  # Replace with your bot token
+TELEGRAM_GROUP_ID = "-1002882865906"    # Replace with your group chat ID
 
 # === Logging Setup ===
 logging.basicConfig(
