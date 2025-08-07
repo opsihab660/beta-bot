@@ -1,4 +1,4 @@
-pyTelegramBotAPI
+telebot
 beautifulsoup4
 DrissionPage
 pyvirtualdisplay
