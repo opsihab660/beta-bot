@@ -222,6 +222,9 @@ def browser_login(driver: ChromiumPage):
     cf_bypasser = CloudflareBypasser(driver)
     cf_bypasser.bypass()
 
+    logging.info("Waiting for page to settle after bypass...")
+    time.sleep(5)  # Wait for potential redirects or page loads
+
     if "just a moment" in driver.title.lower():
         logging.error("Cloudflare bypass failed. Could not proceed.")
         return False
