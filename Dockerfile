@@ -1,65 +1,31 @@
-# Use an image with a desktop environment
-FROM kasmweb/desktop:1.16.0-rolling-daily
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-# Set environment variables to avoid interactive prompts during build
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install necessary packages for Xvfb and pyvirtualdisplay
-USER root
-RUN apt-get update && \
-    apt-get install -y \
-        python3 \
-        python3-pip \
-        wget \
-        gnupg \
-        ca-certificates \
-        libx11-xcb1 \
-        libxcomposite1 \
-        libxdamage1 \
-        libxrandr2 \
-        libxss1 \
-        libxtst6 \
-        libnss3 \
-        libatk-bridge2.0-0 \
-        libgtk-3-0 \
-        x11-apps \
-        fonts-liberation \
-        libappindicator3-1 \
-        libu2f-udev \
-        libvulkan1 \
-        libdrm2 \
-        xdg-utils \
-        xvfb \
-        libasound2 \
-        libcurl4 \
-        libgbm1 \
-        && rm -rf /var/lib/apt/lists/*
-
-# Download and install specific version of Google Chrome
-RUN wget https://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/google-chrome-stable_126.0.6478.126-1_amd64.deb && \
-    dpkg -i google-chrome-stable_126.0.6478.126-1_amd64.deb && \
-    rm google-chrome-stable_126.0.6478.126-1_amd64.deb
-
-# Install Python dependencies including pyvirtualdisplay
-RUN pip3 install --upgrade pip
-RUN pip3 install pyvirtualdisplay
-
-# Set up a working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy application files
+# Install Google Chrome and other dependencies
+# We are using the official Google Chrome package
+RUN apt-get update && apt-get install -y wget gnupg
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file into the container at /app
+COPY requirements.txt .
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application's code
 COPY . .
 
-# Install Python dependencies
-RUN pip3 install -r requirements.txt
-RUN pip3 install -r server_requirements.txt
+# Set the CHROME_PATH environment variable
+ENV CHROME_PATH /usr/bin/google-chrome
+# Set the script to run in headless mode
+ENV HEADLESS true
 
-# Expose the port for the FastAPI server
-EXPOSE 8000
-
-# Copy and set up startup script
-COPY docker_startup.sh /
-RUN chmod +x /docker_startup.sh
-
-# Set the entrypoint directly to the startup script
-ENTRYPOINT ["/docker_startup.sh"]
+# Command to run the application
+CMD ["python", "login.py"]

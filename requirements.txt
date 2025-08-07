@@ -1,1 +1,4 @@
-DrissionPage==4.0.5.6
+py-telegram-bot-api
+beautifulsoup4
+DrissionPage
+pyvirtualdisplay

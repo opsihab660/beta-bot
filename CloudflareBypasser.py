@@ -31,25 +31,41 @@ class CloudflareBypasser:
     
     def locate_cf_button(self):
         button = None
-        eles = self.driver.eles("tag:input")
-        for ele in eles:
-            if "name" in ele.attrs.keys() and "type" in ele.attrs.keys():
-                if "turnstile" in ele.attrs["name"] and ele.attrs["type"] == "hidden":
-                    button = ele.parent().shadow_root.child()("tag:body").shadow_root("tag:input")
-                    break
-            
+        # Basic search for the button
+        try:
+            eles = self.driver.eles("tag:input[name*=turnstile][type=hidden]")
+            if eles:
+                parent = eles[0].parent()
+                if parent and parent.shadow_root:
+                    child = parent.shadow_root.child()
+                    # The child is the iframe
+                    if child:
+                        body = child('tag:body')
+                        if body and body.shadow_root:
+                            button = body.shadow_root('tag:input')
+        except Exception as e:
+            self.log_message(f"Error in basic search for CF button: {e}")
+
         if button:
             return button
-        else:
-            # If the button is not found, search it recursively
-            self.log_message("Basic search failed. Searching for button recursively.")
-            ele = self.driver.ele("tag:body")
-            iframe = self.search_recursively_shadow_root_with_iframe(ele)
+
+        # Recursive search if basic search fails
+        self.log_message("Basic search failed. Searching for button recursively.")
+        try:
+            body_ele = self.driver.ele("tag:body")
+            if not body_ele:
+                self.log_message("Body element not found for recursive search.")
+                return None
+                
+            iframe = self.search_recursively_shadow_root_with_iframe(body_ele)
             if iframe:
-                button = self.search_recursively_shadow_root_with_cf_input(iframe("tag:body"))
-            else:
-                self.log_message("Iframe not found. Button search failed.")
-            return button
+                iframe_body = iframe("tag:body")
+                if iframe_body:
+                    button = self.search_recursively_shadow_root_with_cf_input(iframe_body)
+        except Exception as e:
+            self.log_message(f"Error in recursive search for CF button: {e}")
+
+        return button
 
     def log_message(self, message):
         if self.log:
