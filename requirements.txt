@@ -1,4 +1,4 @@
-py-telegram-bot-api==0.0.8
+pyTelegramBotAPI
 beautifulsoup4
 DrissionPage
 pyvirtualdisplay
